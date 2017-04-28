@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
 /*
  Module name:   template_fsm
- Author:        Robert Szczygiel
- Version:       1.0
- Last modified: 2017-04-03
+ Author:        Przemek Drwal && Tomek Wieclawek
+ Version:       1.1
+ Last modified: 2017-04-28
  Coding style: safe with FPGA sync reset
  Description:  Template for modified Moore FSM for UEC2 project
  */
