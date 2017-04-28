@@ -8,7 +8,7 @@
  Description:  Template for modified Moore FSM for UEC2 project
  */
 //////////////////////////////////////////////////////////////////////////////
-module template_fsm
+module Strzal
 
 	(
 
@@ -46,8 +46,8 @@ module template_fsm
 	STRZAL = 2'b01,
 	USUN_POCISK = 2'b11;
 
-	localparam pocisk_start_x = 400;
-	localparam pocisk_start_y = 0;
+	localparam POCISK_START_X = 400;
+	localparam POCISK_START_Y = 0;
 
 //------------------------------------------------------------------------------
 // local variables
@@ -59,6 +59,18 @@ module template_fsm
 	reg  [11:0] pozycja_y_myszy;
 	reg  [11:0] pozycja_x;
     reg  [11:0] pozycja_y;	
+    reg  [11:0] pozycja_x_nxt;
+    reg  [11:0] pozycja_y_nxt;    
+    
+    reg [10:0] hcount_nxt;
+    reg [10:0] vcount_nxt;        
+    reg h_blank_nxt;
+    reg v_blank_nxt;
+    reg h_sync_nxt;
+    reg v_sync_nxt;
+    reg [11:0] rgb_nxt;
+    reg [11:0] x_pos_nxt;
+    reg [11:0] y_pos_nxt;
 	
 //------------------------------------------------------------------------------
 // state sequential with synchronous reset
@@ -78,8 +90,6 @@ module template_fsm
 		case(state)
             ODDAJ_STRZAL: begin
             state_nxt = left_click ? STRZAL : ODDAJ_STRZAL; 
-//            pozycja_x_myszy = x_pos_in; //bedze_nizej
-//            pozycja_y_myszy = y_pos_in;
             end
             STRZAL:
             state_nxt = ((pozycja_x<=0) || (pozycja_x >=799) || (pozycja_y >=599) || shoot_enable) ? USUN_POCISK : STRZAL;
@@ -94,10 +104,28 @@ module template_fsm
 //------------------------------------------------------------------------------
 	always @(posedge clk) begin : out_reg
 		if(rst) begin : out_reg_rst
-			myout = 1'b0;
+            hcount_out <= 0;
+            vcount_out <= 0;    
+            h_blank_out <= 0;
+            v_blank_out <= 0;
+            h_sync_out <= 0;
+            v_sync_out <= 0;
+            rgb_out <= 0;
+            x_pos_out <= 0;
+            y_pos_out <= 0;
+            pozycja_x_nxt <= 0;
+            pozycja_y_nxt <= 0;
 		end
 		else begin : out_reg_run
-			myout = myout_nxt;
+            hcount_out <= hcount_nxt;
+            vcount_out <= vcount_nxt;    
+            h_blank_out <= h_blank_nxt;
+            v_blank_out <= v_blank_nxt;
+            h_sync_out <= h_sync_nxt;
+            v_sync_out <= v_sync_nxt;
+            rgb_out <= rgb_nxt;
+            x_pos_out <= x_pos_nxt;
+            y_pos_out <= y_pos_nxt;
 		end
 	end
 //------------------------------------------------------------------------------
@@ -105,8 +133,28 @@ module template_fsm
 //------------------------------------------------------------------------------
 	always @* begin : out_comb
 		case(state_nxt)
-			ST_3:    myout_nxt = 1'b1;
-			default: myout_nxt = 1'b0;
+			ODDAJ_STRZAL: begin
+            pozycja_x_myszy = x_pos_in;
+            pozycja_y_myszy = y_pos_in;
+			end
+			
+			STRZAL: begin
+			pozycja_x_nxt = pozycja_x +1'b1;
+			pozycja_y_nxt = ( (y_pos_in/(y_pos_in-POCISK_START_X)) * pozycja_x ) - ( 400 * (y_pos_in/(y_pos_in-POCISK_START_X)) );
+			if((hcount_in >= pozycja_x) &&  (hcount_in <= pozycja_x + 3) && (vcount_in >= pozycja_y) &&  (vcount_in <= pozycja_y +3))
+			     rgb_nxt = 12'hf_0_0_;
+			else
+			     rgb_nxt = rgb_in;			     
+			end
+			
+			USUN_POCISK: begin
+			if((hcount_in >= pozycja_x) &&  (hcount_in <= pozycja_x + 3) && (vcount_in >= pozycja_y) &&  (vcount_in <= pozycja_y +3))
+                 rgb_nxt = rgb_in;
+            else
+                 rgb_nxt = rgb_in;                 
+            		
+			end
+			
 		endcase
 	end
 
