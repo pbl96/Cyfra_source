@@ -148,8 +148,13 @@ module Strzal
 			end
 			
 			USUN_POCISK: begin
-			if((hcount_in >= pozycja_x) &&  (hcount_in <= pozycja_x + 3) && (vcount_in >= pozycja_y) &&  (vcount_in <= pozycja_y +3))
+			if((hcount_in >= pozycja_x) &&  (hcount_in <= pozycja_x + 3) && (vcount_in >= pozycja_y) &&  (vcount_in <= pozycja_y +3)) begin
                  rgb_nxt = rgb_in;
+                 pozycja_x_nxt = 0;
+                 pozycja_y_nxt = 0;
+                 pozycja_x_myszy = 0;
+                 pozycja_y_myszy = 0;
+                 end
             else
                  rgb_nxt = rgb_in;                 
             		
