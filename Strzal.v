@@ -19,6 +19,7 @@ module Strzal
 		input wire h_sync_in,
 		input wire v_sync_in,
 		input wire h_blank_in,
+		input wire v_blank_in,
 		input wire rgb_in,
 		output reg [10:0] hcount_out,
         output reg [10:0] vcount_out,		
@@ -102,6 +103,17 @@ module Strzal
 //------------------------------------------------------------------------------
 // output register
 //------------------------------------------------------------------------------
+    always @(posedge clk) begin : out_nxt
+        hcount_nxt <= hcount_in;
+        vcount_nxt <= vcount_in;    
+        h_blank_nxt <= h_blank_in;
+        v_blank_nxt <= v_blank_in;
+        h_sync_nxt <= h_sync_in;
+        v_sync_nxt <= v_sync_in;
+        x_pos_nxt <= x_pos_in;
+        y_pos_nxt <= y_pos_in;
+    end
+    
 	always @(posedge clk) begin : out_reg
 		if(rst) begin : out_reg_rst
             hcount_out <= 0;
@@ -128,6 +140,7 @@ module Strzal
             y_pos_out <= y_pos_nxt;
 		end
 	end
+	
 //------------------------------------------------------------------------------
 // output logic
 //------------------------------------------------------------------------------
