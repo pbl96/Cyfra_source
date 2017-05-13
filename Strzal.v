@@ -30,7 +30,9 @@ module Strzal
 		output reg [11:0] rgb_out,
 		output reg [11:0] x_pos_out,
 		output reg [11:0] y_pos_out,
-		
+		output reg [11:0] pozycja_y_out,  // pozycja pocisku
+		output reg [11:0] pozycja_x_out,
+				
 		input wire shoot_enable,
 		input wire [11:0] x_pos_in,
 		input wire [11:0] y_pos_in,
@@ -138,6 +140,8 @@ module Strzal
             rgb_out <= rgb_nxt;
             x_pos_out <= x_pos_nxt;
             y_pos_out <= y_pos_nxt;
+            pozycja_x_out <= pozycja_x_nxt;
+            pozycja_y_out <= pozycja_y_nxt;
 		end
 	end
 	
@@ -152,8 +156,8 @@ module Strzal
 			end
 			
 			STRZAL: begin
-			pozycja_x_nxt = pozycja_x +1'b1;
-			pozycja_y_nxt = ( (y_pos_in/(y_pos_in-POCISK_START_X)) * pozycja_x ) - ( 400 * (y_pos_in/(y_pos_in-POCISK_START_X)) );
+			pozycja_y_nxt = pozycja_y +1'b1;
+			pozycja_x_nxt = (pozycja_y_myszy + POCISK_START_X*(pozycja_y_myszy/(pozycja_x_myszy-POCISK_START_X))) / (pozycja_y_myszy/(pozycja_x_myszy-POCISK_START_X));
 			if((hcount_in >= pozycja_x) &&  (hcount_in <= pozycja_x + 3) && (vcount_in >= pozycja_y) &&  (vcount_in <= pozycja_y +3))
 			     rgb_nxt = 12'hf_0_0_;
 			else

@@ -8,7 +8,7 @@
  Description:  Template for modified Moore FSM for UEC2 project
  */
 //////////////////////////////////////////////////////////////////////////////
-module Generator_tla
+module GeneratorTla
 	(
 
 		input wire clk,  // posedge active clock
